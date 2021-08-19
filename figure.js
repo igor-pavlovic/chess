@@ -102,7 +102,7 @@ const createKnight = (color, fieldPosition) => {
   const crown = createKnightBase(color);
 
   crown.position.set(baseSize, baseSize, baseSize / 2);
-  crown.rotateZ(180 * (Math.PI / 180))
+  crown.rotateZ( THREE.MathUtils.degToRad( 180 ) )
 
 
   const figure = new THREE.Group();
@@ -212,11 +212,11 @@ const createKing = (color, fieldPosition) => {
   const crownPosition = { x: 0, y: 0, z: 0 }
   crownPosition.z += baseSize;
   const crown = createPawn(color, crownPosition);
-  crown.rotateZ(45 * (Math.PI / 180))
+  crown.rotateZ( THREE.MathUtils.degToRad( 45 ) )
 
   const figure = new THREE.Group();
-  figure.add(base);
-  figure.add(crown);
+  figure.add( base );
+  figure.add( crown );
 
   // Positioning
   const x = fieldPosition.x;
