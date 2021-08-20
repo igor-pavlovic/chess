@@ -18,8 +18,8 @@ function createBoard(scene, state) {
       const field = state.board[i][j];
       
       const position = {
-        x: i,
-        y: j,
+        x: j,
+        y: i,
         z: -0.05,
       }
       

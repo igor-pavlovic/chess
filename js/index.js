@@ -12,6 +12,7 @@ let camera, scene, raycaster, renderer, controls;
 let fieldMeshes, pieceMeshes
 
 let INTERSECTED;
+let activeFigure;
 
 const pointer = new THREE.Vector2();
 
@@ -67,12 +68,13 @@ function init() {
 
   addInterfaceEvents()
 
-  
+
   
   state = new State();
   state.init();
   
   [ fieldMeshes, pieceMeshes ] = createBoard(scene, state)
+
 
 
 }
@@ -111,7 +113,7 @@ function render() {
   raycaster.setFromCamera( pointer, camera );
 
   // calculate objects intersecting the picking ray
-  const intersects = raycaster.intersectObjects( scene.children );
+  const intersects = raycaster.intersectObjects( activeFigure ? fieldMeshes : pieceMeshes );
 
 
   if ( intersects.length > 0 ) {
@@ -150,6 +152,28 @@ function addInterfaceEvents() {
 
   //
 
+  document.addEventListener("click", () => {
+
+    if (INTERSECTED) {
+
+      if (!activeFigure) {
+
+        activeFigure = INTERSECTED;
+        
+
+      } else {
+
+        moveFigure( activeFigure, INTERSECTED )
+
+        activeFigure = null;
+
+      }
+    }
+
+  })
+
+  //
+
   const rotateButton = document.querySelector(".rotate");
   rotateButton.addEventListener("click", () => {
     controls.enabled = !controls.enabled;
@@ -169,9 +193,22 @@ function addInterfaceEvents() {
     camera.position.y = 3.5;
   }); */
 
+  
 }
 
 
-function moveFigure(figure, target) {
+function moveFigure(pieceMesh, fieldMesh) {
 
+  if (pieceMesh.state.field.mesh === fieldMesh) {
+
+        return
+
+  } else {
+
+    state.move(pieceMesh.state, fieldMesh.state);
+
+    pieceMesh.translateX( fieldMesh.position.x - pieceMesh.position.x )
+    pieceMesh.translateY( fieldMesh.position.y - pieceMesh.position.y )
+
+  }
 }

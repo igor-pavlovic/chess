@@ -24,4 +24,5 @@ Figure.prototype.moveToField = (field) => {
   this.hasMoved = true;
 }
 
+
 export default Figure;

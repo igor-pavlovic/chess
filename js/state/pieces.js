@@ -14,10 +14,12 @@ Pawn.prototype.checkMove = (target) => {
           ((target.row === this.row - 1) || 
           (!this.hasMoved && target.row === this.row - 2)))) {
 
+
     if (!target.occupied && target.col === this.col) return true;
 
     if (target.occupied &&
       (target.col === this.col + 1 || target.col === this.col - 1)) return true;
+
   }
 }
 

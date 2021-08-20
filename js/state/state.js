@@ -165,10 +165,18 @@ function State() {
       const piece = this.pieces.find(item => item.row === target.row && 
                                               item.col === target.col);
 
-      piece.removeFromField()
+      console.log(piece, target)           
+      if (piece) piece.removeFromField()
 
     }
 
+    // Clear up piece's old field and set it to unoccupied
+    if (piece.field) {
+      piece.field.isOccupied = false;
+      piece.field.piece = null;
+    }
+
+    // Move the piece to new position and set new links
     piece.row = target.row;
     piece.col = target.col;
     piece.field = target;

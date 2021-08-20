@@ -96,28 +96,30 @@ function KnightMesh( color, { x, y, z } ) {
 
 function BishopMesh( color, { x, y, z } ) {
 
+  const displacement = 1 / 2;
+
   const shape = new THREE.Shape();
 
-  shape.moveTo(0, 0);
-  shape.lineTo(0, 0.2);
-  shape.lineTo(0.3, 0.5);
-  shape.lineTo(0, 0.8);
-  shape.lineTo(0, 1);
+  shape.moveTo(0 - displacement, 0 - displacement);
+  shape.lineTo(0 - displacement, 0.2 - displacement);
+  shape.lineTo(0.3 - displacement, 0.5 - displacement);
+  shape.lineTo(0 - displacement, 0.8 - displacement);
+  shape.lineTo(0 - displacement, 1 - displacement);
 
-  shape.lineTo(0.2, 1);
-  shape.lineTo(0.5, 0.7);
-  shape.lineTo(0.8, 1);
-  shape.lineTo(1, 1);
+  shape.lineTo(0.2 - displacement, 1 - displacement);
+  shape.lineTo(0.5 - displacement, 0.7 - displacement);
+  shape.lineTo(0.8 - displacement, 1 - displacement);
+  shape.lineTo(1 - displacement, 1 - displacement);
 
-  shape.lineTo(1, 0.8);
-  shape.lineTo(0.7, 0.5);
-  shape.lineTo(1, 0.2);
-  shape.lineTo(1, 0);
+  shape.lineTo(1 - displacement, 0.8 - displacement);
+  shape.lineTo(0.7 - displacement, 0.5 - displacement);
+  shape.lineTo(1 - displacement, 0.2 - displacement);
+  shape.lineTo(1 - displacement, 0 - displacement);
 
-  shape.lineTo(0.8, 0);
-  shape.lineTo(0.5, 0.3);
-  shape.lineTo(0.2, 0);
-  shape.lineTo(0, 0);
+  shape.lineTo(0.8 - displacement, 0 - displacement);
+  shape.lineTo(0.5 - displacement, 0.3 - displacement);
+  shape.lineTo(0.2 - displacement, 0 - displacement);
+  shape.lineTo(0 - displacement, 0 - displacement);
 
   const extrudeSettings = {
     steps: 1,
@@ -135,7 +137,7 @@ function BishopMesh( color, { x, y, z } ) {
   const mesh = new THREE.Mesh(geometry, color);
 
 
-  mesh.position.set( x - baseSize / 2, y - baseSize / 2, z );
+  mesh.position.set( x, y, z );
 
   return mesh
 
