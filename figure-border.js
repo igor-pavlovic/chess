@@ -5,9 +5,6 @@ const secondarySize = Math.sqrt((baseSize / 2) ** 2 * 2)
 
 
 const createPawn = (color, fieldPosition) => {
-  // Pythagora
-  const secondarySize = Math.sqrt((baseSize / 2) ** 2 * 2)
-
   // Geometry
   const geometry = new THREE.BoxGeometry(secondarySize, secondarySize, secondarySize);
 
