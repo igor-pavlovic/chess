@@ -2,8 +2,9 @@ import * as THREE from 'https://cdn.skypack.dev/three@0.131.3';
 
 const fieldSize = 1;
 const baseSize = fieldSize * 0.6;
+
 // Pythagora's theorem to get size of the crown and pawn elements
-const secondarySize = Math.sqrt((baseSize / 2) ** 2 * 2)
+const secondarySize = Math.sqrt( (baseSize / 2) ** 2 * 2 )
 
 
 function FieldMesh(color, { x, y, z }) {
@@ -20,8 +21,8 @@ function FieldMesh(color, { x, y, z }) {
 
 function PawnMesh( color, { x, y, z } ) {
 
-  const geometry = new THREE.BoxGeometry(secondarySize, secondarySize, secondarySize);
-  const mesh = new THREE.Mesh(geometry, color);
+  const geometry = new THREE.BoxGeometry( secondarySize, secondarySize, secondarySize );
+  const mesh = new THREE.Mesh( geometry, color );
 
   mesh.position.set(x, y, z + secondarySize / 2)
 
@@ -33,7 +34,7 @@ function PawnMesh( color, { x, y, z } ) {
 
 function RookMesh( color, { x, y, z } ) {
 
-  const geometry = new THREE.BoxGeometry(baseSize, baseSize, baseSize);
+  const geometry = new THREE.BoxGeometry( baseSize, baseSize, baseSize );
   const mesh = new THREE.Mesh(geometry, color);
 
   mesh.position.set(x, y, z + baseSize / 2)
@@ -66,8 +67,8 @@ function KnightBaseMesh( color ) {
     bevelSegments: 1
   };
 
-  const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-  const mesh = new THREE.Mesh(geometry, color);
+  const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+  const mesh = new THREE.Mesh( geometry, color );
 
   return mesh
 

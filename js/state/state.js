@@ -50,7 +50,7 @@ function State() {
   }  */
 
 
-  this.init = () => {
+  this.init = function() {
 
     this.createBoard()
 
@@ -71,13 +71,13 @@ function State() {
 
     // Position each piece to their initial place
     for (let i = 0; i < pieces.length; i++) {
-      this.move( pieces[i], fields[i] );
+      this.placePiece( pieces[i], fields[i] );
     }
 
   }
 
 
-  this.createBoard = () => {
+  this.createBoard = function() {
 
     const board = []
 
@@ -117,7 +117,7 @@ function State() {
   }
 
 
-  this.createPieces = (color) => {
+  this.createPieces = function( color ) {
 
     const pieces = []
 
@@ -155,20 +155,7 @@ function State() {
 
   }
 
-  
-
-
-  this.move = (piece, target) => {
-
-    if (target.isOccupied) {
-
-      const piece = this.pieces.find(item => item.row === target.row && 
-                                              item.col === target.col);
-
-      console.log(piece, target)           
-      if (piece) piece.removeFromField()
-
-    }
+  this.placePiece = function( piece, target ) {
 
     // Clear up piece's old field and set it to unoccupied
     if (piece.field) {
@@ -182,6 +169,31 @@ function State() {
     piece.field = target;
     target.piece = piece;
     target.isOccupied = true;
+
+  }
+
+
+  this.move = function( piece, target ) {
+
+    if (target.isOccupied && target.piece.color !== piece.color) {
+
+      const pieceToRemove = this.pieces.find(item => item.row === target.row && 
+                                              item.col === target.col);
+
+      if (pieceToRemove) pieceToRemove.removeFromField()
+      
+    }
+
+    piece.hasMoved = true;
+
+    this.placePiece( piece, target )
+
+  }
+
+
+  this.getLegalMoves = function ( piece ) {
+
+    return this.board.flat( 2 ).filter( field  =>  piece.checkMove( field ))
 
   }
 

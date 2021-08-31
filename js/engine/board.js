@@ -35,6 +35,7 @@ function createBoard(scene, state) {
       scene.add(mesh);
     }
   }
+  
 
   for (let piece of state.pieces) {
 
@@ -74,6 +75,7 @@ function createBoard(scene, state) {
     }
 
     //
+
     piece.mesh = mesh;
     mesh.state = piece;
 

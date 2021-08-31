@@ -9,7 +9,7 @@ function Figure(type, color) {
 }
 
 
-Figure.prototype.removeFromField = () => {
+Figure.prototype.removeFromField = function() {
   this.isRemoved = true;
   this.col = null;
   this.row = null;
@@ -17,7 +17,7 @@ Figure.prototype.removeFromField = () => {
 }
 
 
-Figure.prototype.moveToField = (field) => {
+Figure.prototype.moveToField = function( field )  {
   this.field = field;
   this.row = field.row;
   this.col = field.col;

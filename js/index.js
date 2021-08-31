@@ -11,8 +11,8 @@ let container;
 let camera, scene, raycaster, renderer, controls;
 let fieldMeshes, pieceMeshes
 
-let INTERSECTED;
-let activeFigure;
+let HOVERED_ELEMENT;
+let SELECTED_PIECE, legalMoves = [];
 
 const pointer = new THREE.Vector2();
 
@@ -76,35 +76,17 @@ function init() {
   [ fieldMeshes, pieceMeshes ] = createBoard(scene, state)
 
 
-
 }
 
-
-function onWindowResize() {
-
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-
-  renderer.setSize(window.innerWidth, window.innerHeight);
-
-}
-
-
-function onPointerMove(event) {
-
-  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-  pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
-
-}
 
 
 function animate() {
 
   requestAnimationFrame(animate);
-
   render();
 
 }
+
 
 
 function render() {
@@ -113,26 +95,37 @@ function render() {
   raycaster.setFromCamera( pointer, camera );
 
   // calculate objects intersecting the picking ray
-  const intersects = raycaster.intersectObjects( activeFigure ? fieldMeshes : pieceMeshes );
+  const intersects = raycaster.intersectObjects( SELECTED_PIECE ? fieldMeshes : pieceMeshes );
 
 
+  // Colour selected items
   if ( intersects.length > 0 ) {
 
-    if ( INTERSECTED != intersects[ 0 ].object ) {
+    if ( HOVERED_ELEMENT != intersects[ 0 ].object ) {
 
-      if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+      if ( HOVERED_ELEMENT ) 
+        HOVERED_ELEMENT.material.emissive.setHex( HOVERED_ELEMENT.currentHex );
 
-      INTERSECTED = intersects[ 0 ].object;
-      INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
-      INTERSECTED.material.emissive.setHex( 0xff0000 );
+      HOVERED_ELEMENT = intersects[ 0 ].object;
+      HOVERED_ELEMENT.currentHex = HOVERED_ELEMENT.material.emissive.getHex();
+      HOVERED_ELEMENT.material.emissive.setHex( 0xff0000 );
 
     }
 
   } else {
 
-    if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
 
-    INTERSECTED = null;
+    if ( HOVERED_ELEMENT && fieldMeshes.includes( HOVERED_ELEMENT )) {
+
+      HOVERED_ELEMENT.material.emissive.setHex( HOVERED_ELEMENT.originalHex );
+
+    } else if ( HOVERED_ELEMENT ) {
+      
+      HOVERED_ELEMENT.material.emissive.setHex( HOVERED_ELEMENT.currentHex );
+    }
+
+
+    HOVERED_ELEMENT = null;
 
   }
 
@@ -152,36 +145,22 @@ function addInterfaceEvents() {
 
   //
 
-  document.addEventListener("click", () => {
-
-    if (INTERSECTED) {
-
-      if (!activeFigure) {
-
-        activeFigure = INTERSECTED;
-        
-
-      } else {
-
-        moveFigure( activeFigure, INTERSECTED )
-
-        activeFigure = null;
-
-      }
-    }
-
-  })
+  document.addEventListener("click", onMouseClick)
 
   //
 
-  const rotateButton = document.querySelector(".rotate");
-  rotateButton.addEventListener("click", () => {
+
+  // UI Events
+
+  //
+
+  document.querySelector(".rotate").addEventListener("click", () => {
     controls.enabled = !controls.enabled;
   });
 
+  //
 
-  const topViewButton = document.querySelector(".top");
-  topViewButton.addEventListener("click", () => {
+  document.querySelector(".top").addEventListener("click", () => {
     controls.reset();
   });
 
@@ -193,17 +172,79 @@ function addInterfaceEvents() {
     camera.position.y = 3.5;
   }); */
 
-  
 }
+
+
+
+function onWindowResize() {
+
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+}
+
+
+
+function onPointerMove(event) {
+
+  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+  pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
+}
+
+
+
+function onMouseClick(event) {
+
+  if (HOVERED_ELEMENT) {
+    
+    if (!SELECTED_PIECE) {
+      
+      // Handle selection of the figure
+
+      SELECTED_PIECE = HOVERED_ELEMENT;
+
+
+      // Paint fields which figure can be moved to
+
+      legalMoves = state.getLegalMoves( SELECTED_PIECE.state ).map( field => field.mesh );
+
+      legalMoves.map( field => {
+
+        field.originalHex = field.material.emissive.getHex();
+        field.material.emissive.setHex( 0xff00ff );
+
+      })
+
+    } else {
+      
+      // Handle moving the figure
+
+      moveFigure( SELECTED_PIECE, HOVERED_ELEMENT )
+
+      
+      legalMoves.map( field => field.material.emissive.setHex( field.originalHex ) )
+
+      legalMoves = []
+      SELECTED_PIECE = null;
+
+    }
+  }
+
+}
+
 
 
 function moveFigure(pieceMesh, fieldMesh) {
 
   if (pieceMesh.state.field.mesh === fieldMesh) {
 
+        // If the target fieldMesh is the one that the figure is already standing on, do nothing
         return
 
-  } else {
+  } else if ( legalMoves.includes(fieldMesh) ) {
 
     state.move(pieceMesh.state, fieldMesh.state);
 
@@ -212,3 +253,4 @@ function moveFigure(pieceMesh, fieldMesh) {
 
   }
 }
+

@@ -6,7 +6,8 @@ function Pawn(color) {
 
 Pawn.prototype = new Figure();
 
-Pawn.prototype.checkMove = (target) => {
+Pawn.prototype.checkMove = function(target) {
+  
   if ((this.color === "black" && 
           ((target.row === this.row + 1) || 
           (!this.hasMoved && target.row === this.row + 2))) ||
@@ -23,7 +24,7 @@ Pawn.prototype.checkMove = (target) => {
   }
 }
 
-Pawn.prototype.move = (target) => {
+Pawn.prototype.move = function(target) {
   if (this.checkMove(target)) {
     this.moveToField(target)
   } else {
