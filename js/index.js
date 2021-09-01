@@ -46,16 +46,35 @@ function init() {
   scene = new THREE.Scene();
   scene.background = new THREE.Color('beige');
 
-  const light = new THREE.DirectionalLight(0xffffff, 1);
-  light.position.set(1, 1, 1).normalize();
-  scene.add(light);
+  const mainLight = new THREE.DirectionalLight( 0xffffff, 0.6);
+  mainLight.castShadow = true;
+
+  mainLight.position.set( 15, 22, 1 );
+  mainLight.target.position.set( 0, 0, 0 );
+  scene.add(mainLight, mainLight.target);
+
+  const secondaryLight = new THREE.DirectionalLight( 0xffffff, 0.2);
+  secondaryLight.position.set(3, 3, 10);
+  secondaryLight.target.position.set(8, 8, 0);
+  scene.add(secondaryLight, secondaryLight.target);
+
+  const ambientLight = new THREE.AmbientLight( 0xffffff, 0.5);
+  scene.add(ambientLight); 
+
+  const atmosphericLight = new THREE.SpotLight( 0xffffff, 0.3);
+  atmosphericLight.castShadow = true; 
+  atmosphericLight.position.set(0, 0, 10);
+  atmosphericLight.target.position.set(3, 3, 0);
+  scene.add(atmosphericLight, atmosphericLight.target);
 
 
   raycaster = new THREE.Raycaster();
 
-  renderer = new THREE.WebGLRenderer();
+  renderer = new THREE.WebGLRenderer( { antialias: true } );
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   container.appendChild(renderer.domElement);
 
 
@@ -120,7 +139,7 @@ function render() {
       HOVERED_ELEMENT.material.emissive.setHex( HOVERED_ELEMENT.originalHex );
 
     } else if ( HOVERED_ELEMENT ) {
-      
+
       HOVERED_ELEMENT.material.emissive.setHex( HOVERED_ELEMENT.currentHex );
     }
 
@@ -154,8 +173,14 @@ function addInterfaceEvents() {
 
   //
 
-  document.querySelector(".rotate").addEventListener("click", () => {
+  const rotateButton = document.querySelector(".rotate");
+  const rotateInfo = document.querySelector(".rotateInfo");
+
+  rotateButton.addEventListener("click", () => {
     controls.enabled = !controls.enabled;
+    
+    rotateButton.classList.toggle("active");
+    rotateInfo.classList.toggle("visible");
   });
 
   //

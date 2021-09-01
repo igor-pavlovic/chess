@@ -12,6 +12,7 @@ function FieldMesh(color, { x, y, z }) {
   const geometry = new THREE.BoxGeometry(1, 1, 0.1);
 
   const mesh = new THREE.Mesh(geometry, color);
+  mesh.receiveShadow = true;
 
   mesh.position.set(x, y, z);
 
@@ -23,8 +24,10 @@ function PawnMesh( color, { x, y, z } ) {
 
   const geometry = new THREE.BoxGeometry( secondarySize, secondarySize, secondarySize );
   const mesh = new THREE.Mesh( geometry, color );
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
 
-  mesh.position.set(x, y, z + secondarySize / 2)
+  mesh.position.set(x, y, z + secondarySize / 2);
 
   return mesh
 
@@ -36,8 +39,10 @@ function RookMesh( color, { x, y, z } ) {
 
   const geometry = new THREE.BoxGeometry( baseSize, baseSize, baseSize );
   const mesh = new THREE.Mesh(geometry, color);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
 
-  mesh.position.set(x, y, z + baseSize / 2)
+  mesh.position.set(x, y, z + baseSize / 2);
 
   return mesh
 
@@ -69,6 +74,8 @@ function KnightBaseMesh( color ) {
 
   const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
   const mesh = new THREE.Mesh( geometry, color );
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
 
   return mesh
 
@@ -136,7 +143,8 @@ function BishopMesh( color, { x, y, z } ) {
   const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
   geometry.scale(baseSize, baseSize, baseSize);
   const mesh = new THREE.Mesh(geometry, color);
-
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
 
   mesh.position.set( x, y, z );
 
@@ -152,6 +160,8 @@ function QueenMesh(color, { x, y, z } ) {
 
   const geometry = new THREE.SphereGeometry(baseSize / 2, 32, 16);
   const crown = new THREE.Mesh(geometry, color);
+  crown.castShadow = true;
+  crown.receiveShadow = true;
 
   crown.position.set(0, 0, baseSize)
 
@@ -173,6 +183,7 @@ function KingMesh(color,  { x, y, z } ) {
 
   const crown = PawnMesh(color, { x: 0, y: 0, z: baseSize / 2 });
   crown.rotateZ( THREE.MathUtils.degToRad( 45 ) )
+  
 
   // Join the crown to the base
   const figure = base.add( crown );

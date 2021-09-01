@@ -4,6 +4,7 @@ function Pawn(color) {
   Figure.apply(this, [ "pawn", color ] );
 };
 
+
 Pawn.prototype = new Figure();
 
 Pawn.prototype.checkMove = function(target) {
@@ -31,6 +32,7 @@ Pawn.prototype.move = function(target) {
     console.log("Move is not valid.")
   }
 }
+
 
 
 function Rook(color) {

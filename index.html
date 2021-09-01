@@ -9,9 +9,20 @@
 </head>
 <body>
   <div class="ui">
-    <button class="button rotate">Rotate & pan</button>
-    <button class="button top">Top view</button>
+    <button class="button rotate">
+      <!-- <img src="/assets/icons/arrow-repeat.svg" alt="Switch to rotate and pan"> -->
+      <img src="/assets/icons/arrows-move.svg" alt="Switch to rotate and pan">
+    </button>
+    <button class="button top">
+      <img src="/assets/icons/arrows-angle-contract.svg" alt="Switch to top view">
+    </button>
+
+    
     <!-- <button class="button side">Side view</button> -->
+  </div>
+  <div class="rotateInfo">
+    You can rotate the board with your mouse (left-click) and pan/move the board as well (right-click).
+    To turn off these controls, press the rotate button on the left again.
   </div>
   <script type="module" src="./js/index.js"></script>
 </body>

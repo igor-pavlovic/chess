@@ -1,15 +1,16 @@
 import * as THREE from 'https://cdn.skypack.dev/three@0.131.3';
 import { FieldMesh, PawnMesh, RookMesh, KnightMesh, BishopMesh, QueenMesh, KingMesh } from './meshes.js';
+import { createMaterialFieldWhite, createMaterialFieldBlack, createMaterialFigureWhite, createMaterialFigureBlack } from "./materials.js"
 
 function createBoard(scene, state) {
   
   const fieldMeshes = [];
   const pieceMeshes = []
 
-  const colorFieldWhite = 'snow'
-  const colorFieldBlack = 'gray'
-  const colorFigureWhite = 'ivory'
-  const colorFigureBlack = 'dimgray'
+  const colorFieldWhite = 0xFFFFFF || 'snow'
+  const colorFieldBlack = 0x828382 || 'gray'
+  const colorFigureWhite = 0xFFFDE9 || 'ivory'
+  const colorFigureBlack = 0x545454 || 'dimgray'
 
 
   for (let i = 0; i < 8; i++) {
@@ -23,8 +24,8 @@ function createBoard(scene, state) {
         z: -0.05,
       }
       
-      const color = field.color === 'white' ? colorFieldWhite : colorFieldBlack
-      const mesh = FieldMesh(new THREE.MeshLambertMaterial({ color }), position);
+      const material = field.color === 'white' ? createMaterialFieldWhite() : createMaterialFieldBlack()
+      const mesh = FieldMesh(material, position);
       
       //
       field.mesh = mesh;
@@ -39,8 +40,7 @@ function createBoard(scene, state) {
 
   for (let piece of state.pieces) {
 
-    const color = piece.color === 'white' ? colorFigureWhite : colorFigureBlack
-    const material = new THREE.MeshLambertMaterial({ color })
+    const material = piece.color === 'white' ? createMaterialFigureWhite() : createMaterialFigureBlack()
 
     const position = {
       x: piece.col,
