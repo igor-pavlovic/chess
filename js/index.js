@@ -5,16 +5,32 @@ import { OrbitControls } from 'https://cdn.skypack.dev/three@0.131.3/examples/js
 import State from './state/state.js'
 import createBoard from './engine/board.js';
 
+// Adjust socket settings depending on the hosting method
+const webSocket = new WebSocket(
+  'ws://'
+  + "127.0.0.1:8000"
+  + '/ws/'
+  + 0
+  + '?v=1.0'
+);
+
+
+// Game's state
 let state
 
+// Rendering
 let container;
 let camera, scene, raycaster, renderer, controls;
-let fieldMeshes, pieceMeshes
 
-let HOVERED_ELEMENT;
-let SELECTED_PIECE, legalMoves = [];
-
+// Pointers and UI
 const pointer = new THREE.Vector2();
+let HOVERED_ELEMENT, SELECTED_PIECE;
+
+
+// Pieces and fields
+let fieldMeshes, pieceMeshes;
+let legalMoves = [];
+
 
 init()
 animate();
@@ -22,6 +38,19 @@ animate();
 
 
 
+webSocket.onmessage = function(e) {
+  const data = JSON.parse(e.data);
+
+  // document.querySelector('#chat-log').value += (data.color + ': ' + data.message + '\n');
+
+  if ( data.action === 'move' ) {
+
+    const figure = state.pieces.find( piece => piece.col === data.piece.col && piece.row === data.piece.row )
+    const target = state.board[ data.target.col ][ data.target.col ]
+
+    moveFigure( figure, target )
+  }
+};
 
 
 
@@ -181,6 +210,7 @@ function addInterfaceEvents() {
     
     rotateButton.classList.toggle("active");
     rotateInfo.classList.toggle("visible");
+    
   });
 
   //
@@ -247,7 +277,27 @@ function onMouseClick(event) {
       
       // Handle moving the figure
 
-      moveFigure( SELECTED_PIECE, HOVERED_ELEMENT )
+      const message = JSON.stringify({
+        action: 'move',
+
+        piece: {
+          row: SELECTED_PIECE.state.row,
+          col: SELECTED_PIECE.state.col
+        },
+
+        target: { 
+          row: HOVERED_ELEMENT.state.row, 
+          col: HOVERED_ELEMENT.state.col 
+        },
+
+        testingNumber: 2,
+        testingString: "2",
+        testingBool: true,
+      })
+
+      webSocket.send(message);
+
+      // moveFigure( SELECTED_PIECE, HOVERED_ELEMENT )
 
       
       legalMoves.map( field => field.material.emissive.setHex( field.originalHex ) )
@@ -278,4 +328,5 @@ function moveFigure(pieceMesh, fieldMesh) {
 
   }
 }
+
 

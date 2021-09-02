@@ -1,4 +1,6 @@
 import * as THREE from 'https://cdn.skypack.dev/three@0.131.3';
+import { BufferGeometryUtils } from 'https://cdn.skypack.dev/three@0.131.3/examples/jsm/utils/BufferGeometryUtils.js';
+
 
 const fieldSize = 1;
 const baseSize = fieldSize * 0.6;
@@ -50,7 +52,7 @@ function RookMesh( color, { x, y, z } ) {
 
 
 
-function KnightBaseMesh( color ) {
+function KnightBaseGeometry() {
 
   const shape = new THREE.Shape();
 
@@ -73,11 +75,11 @@ function KnightBaseMesh( color ) {
   };
 
   const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
-  const mesh = new THREE.Mesh( geometry, color );
-  mesh.castShadow = true;
-  mesh.receiveShadow = true;
 
-  return mesh
+  // Reposition the geometry to be in central position
+  geometry.applyMatrix4(new THREE.Matrix4().makeTranslation( - baseSize/ 2, - baseSize / 2, 0 ));
+  
+  return geometry
 
 }
 
@@ -85,18 +87,22 @@ function KnightBaseMesh( color ) {
 
 function KnightMesh( color, { x, y, z } ) {
 
-  const base = KnightBaseMesh(color);
-  const top = KnightBaseMesh(color);
+  const base = KnightBaseGeometry();
+  const top = KnightBaseGeometry();
 
-  top.position.set(baseSize, baseSize, baseSize / 2);
-  top.rotateZ( THREE.MathUtils.degToRad( 180 ) )
+  top.rotateZ( THREE.MathUtils.degToRad( 180 ) );
+  top.applyMatrix4(new THREE.Matrix4().makeTranslation(0, 0, baseSize / 2));
   
-  // Join two meshes
-  const figure = base.add(top);
+  const geometry = BufferGeometryUtils.mergeBufferGeometries([ base, top])
+  
+  const mesh = new THREE.Mesh( geometry, color );
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
 
-  figure.position.set( x - baseSize / 2, y - baseSize / 2, z );
 
-  return figure
+  mesh.position.set( x, y, z );
+
+  return mesh
 
 }
 
@@ -151,6 +157,54 @@ function BishopMesh( color, { x, y, z } ) {
   return mesh
 
 }
+
+/* 
+function BishopMesh( color, { x, y, z } ) {
+
+  const sqrt2 = Math.sqrt(2)
+  const longSide = 0.8 * sqrt2;
+  const shortSide = 0.2 * sqrt2;
+
+  const firstDiagonal = new THREE.BoxGeometry( longSide, shortSide, 1 );
+  firstDiagonal.rotateZ( THREE.MathUtils.degToRad( -45 ) );
+
+  const secondDiagonal = new THREE.BoxGeometry( longSide, shortSide, 1 );
+  secondDiagonal.rotateZ( THREE.MathUtils.degToRad( 45 ) );
+
+  const firstAngle = new THREE.BoxGeometry( shortSide, shortSide, baseSize );
+  firstAngle.applyMatrix4(new THREE.Matrix4().makeTranslation(- longSide / 2, - longSide / 2, 0 ));
+
+  const secondAngle = new THREE.BoxGeometry( shortSide, shortSide, baseSize );
+  secondAngle.applyMatrix4(new THREE.Matrix4().makeTranslation(longSide / 2, - longSide / 2, 0 ));
+
+  const thirdAngle = new THREE.BoxGeometry( shortSide, shortSide, baseSize );
+  thirdAngle.applyMatrix4(new THREE.Matrix4().makeTranslation(- longSide / 2, longSide / 2, 0 ));
+
+  const fourthAngle = new THREE.BoxGeometry( shortSide, shortSide, baseSize );
+  fourthAngle.applyMatrix4(new THREE.Matrix4().makeTranslation( longSide / 2, longSide / 2, 0 ));
+
+
+  const geometry = BufferGeometryUtils.mergeBufferGeometries([ 
+    firstDiagonal, 
+    secondDiagonal, 
+    firstAngle, 
+    secondAngle, 
+    thirdAngle, 
+    fourthAngle
+  ])
+
+  geometry.scale(baseSize, baseSize, baseSize);
+
+
+  const mesh = new THREE.Mesh(geometry, color);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+
+  mesh.position.set( x, y, z );
+
+  return mesh
+
+} */
 
 
 

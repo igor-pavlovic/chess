@@ -112,6 +112,8 @@ function State() {
     }
 
     this.board = board
+    this.boardFlat = board.flat(2)
+
     return this.board
 
   }
@@ -193,7 +195,7 @@ function State() {
 
   this.getLegalMoves = function ( piece ) {
 
-    return this.board.flat( 2 ).filter( field  =>  piece.checkMove( field ))
+    return this.boardFlat.filter( field  =>  piece.checkMove( field ))
 
   }
 
