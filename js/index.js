@@ -8,11 +8,13 @@ import createBoard from './engine/board.js';
 // Adjust socket settings depending on the hosting method
 const webSocket = new WebSocket(
   'ws://'
-  + "127.0.0.1:8000"
-  + '/ws/'
+  + '127.0.0.1:8000'
+);
+
+/*  + '/ws/'
   + 0
   + '?v=1.0'
-);
+  */
 
 
 // Game's state
@@ -36,21 +38,6 @@ init()
 animate();
 
 
-
-
-webSocket.onmessage = function(e) {
-  const data = JSON.parse(e.data);
-
-  // document.querySelector('#chat-log').value += (data.color + ': ' + data.message + '\n');
-
-  if ( data.action === 'move' ) {
-
-    const figure = state.pieces.find( piece => piece.col === data.piece.col && piece.row === data.piece.row )
-    const target = state.board[ data.target.col ][ data.target.col ]
-
-    moveFigure( figure, target )
-  }
-};
 
 
 
@@ -266,7 +253,7 @@ function onMouseClick(event) {
 
       legalMoves = state.getLegalMoves( SELECTED_PIECE.state ).map( field => field.mesh );
 
-      legalMoves.map( field => {
+      legalMoves.forEach( field => {
 
         field.originalHex = field.material.emissive.getHex();
         field.material.emissive.setHex( 0xff00ff );
@@ -300,7 +287,7 @@ function onMouseClick(event) {
       // moveFigure( SELECTED_PIECE, HOVERED_ELEMENT )
 
       
-      legalMoves.map( field => field.material.emissive.setHex( field.originalHex ) )
+      legalMoves.forEach( field => field.material.emissive.setHex( field.originalHex ) )
 
       legalMoves = []
       SELECTED_PIECE = null;
@@ -312,21 +299,34 @@ function onMouseClick(event) {
 
 
 
-function moveFigure(pieceMesh, fieldMesh) {
-
-  if (pieceMesh.state.field.mesh === fieldMesh) {
+function moveFigure(piece, field) {
+ 
+  if (piece.field === field) {
 
         // If the target fieldMesh is the one that the figure is already standing on, do nothing
         return
 
-  } else if ( legalMoves.includes(fieldMesh) ) {
+  } else if ( state.getLegalMoves( piece ).includes( field ) ) {
+    state.move(piece, field);
 
-    state.move(pieceMesh.state, fieldMesh.state);
-
-    pieceMesh.translateX( fieldMesh.position.x - pieceMesh.position.x )
-    pieceMesh.translateY( fieldMesh.position.y - pieceMesh.position.y )
+    piece.mesh.translateX( field.mesh.position.x - piece.mesh.position.x )
+    piece.mesh.translateY( field.mesh.position.y - piece.mesh.position.y )
 
   }
 }
 
 
+
+webSocket.onmessage = function(e) {
+
+  const data = JSON.parse(e.data);
+
+
+  if ( data.action === 'move' ) {
+
+    const figure = state.pieces.find( piece => piece.col === data.piece.col && piece.row === data.piece.row )
+    const target = state.board[ data.target.row ][ data.target.col ]
+
+    moveFigure( figure, target )
+  }
+};
