@@ -9,6 +9,9 @@ import createBoard from './engine/board.js';
 const webSocket = new WebSocket(
   'ws://'
   + '127.0.0.1:8000'
+  + '/ws/'
+  + 0
+  + '?v=1.0'
 );
 
 /*  + '/ws/'
@@ -307,6 +310,7 @@ function moveFigure(piece, field) {
         return
 
   } else if ( state.getLegalMoves( piece ).includes( field ) ) {
+
     state.move(piece, field);
 
     piece.mesh.translateX( field.mesh.position.x - piece.mesh.position.x )
@@ -324,7 +328,10 @@ webSocket.onmessage = function(e) {
 
   if ( data.action === 'move' ) {
 
-    const figure = state.pieces.find( piece => piece.col === data.piece.col && piece.row === data.piece.row )
+    const figure = state.pieces.find( piece => 
+      piece.col === data.piece.col && 
+      piece.row === data.piece.row )
+
     const target = state.board[ data.target.row ][ data.target.col ]
 
     moveFigure( figure, target )

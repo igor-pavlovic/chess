@@ -195,7 +195,7 @@ function State() {
 
   this.getLegalMoves = function ( piece ) {
 
-    return this.boardFlat.filter( field  =>  piece.checkMove( field ))
+    return this.boardFlat.filter( field  =>  piece.isValidMove( field ))
 
   }
 
