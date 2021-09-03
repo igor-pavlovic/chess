@@ -11,27 +11,39 @@ function Figure(type, color) {
 }
 
 
-Figure.prototype.removeFromField = function() {
+Figure.prototype.removeFromGame = function() {
+
+  this.field.removePiece();
+  this.field = null;
+
   this.isRemoved = true;
   this.col = null;
   this.row = null;
-  this.field = null;
 }
 
 
 Figure.prototype.moveToField = function( field )  {
-  this.field = field;
+
+  // Clear up piece's old field and set it to unoccupied
+  if (this.field) this.field.removePiece();
+
   this.row = field.row;
   this.col = field.col;
-  this.hasMoved = true;
+  
+  // Set up new links
+  this.field = field;
+  field.setPiece( this );
+
 }
 
 
-// Empty method, to be rewritten by each figure
+Figure.prototype.updateMovedStatus = function() { this.hasMoved = true; }
+
+
+// Empty method, to be rewritten by implementation of each figure type
 Figure.prototype.isValidMove = function() {
   console.log( "Method isValidMove() is not implemented for this figure type.")
 }
-
 
 
 Figure.prototype.move = function(target) {

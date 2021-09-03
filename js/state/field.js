@@ -1,3 +1,5 @@
+export default Field;
+
 function Field(color, row, col) {  
   this.isOccupied = false;
   this.piece = null;
@@ -16,4 +18,16 @@ function Field(color, row, col) {
   } */
 }
 
-export default Field
+
+Field.prototype.removePiece = function() {
+  this.isOccupied = false;
+  this.piece = null;
+}
+
+
+Field.prototype.setPiece = function( piece ) {
+  this.isOccupied = true;
+  this.piece = piece;
+}
+
+

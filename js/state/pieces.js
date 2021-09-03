@@ -19,20 +19,31 @@ Pawn.prototype = new Figure();
 
 Pawn.prototype.isValidMove = function(target) {
   
-  if ((this.color === "black" && 
-          ((target.row === this.row + 1) || 
-          (!this.hasMoved && target.row === this.row + 2))) ||
-      (this.color === "white" && 
-          ((target.row === this.row - 1) || 
-          (!this.hasMoved && target.row === this.row - 2)))) {
+  if (this.color === "black") {
+
+    if ((!target.isOccupied && target.col === this.col && target.row === this.row + 1) ||
+         (target.isOccupied && target.piece.color !== "black" && (target.col === this.col + 1 || target.col === this.col - 1) && target.row === this.row + 1)) 
+      return true
 
 
-    if (!target.occupied && target.col === this.col) return true;
+    if (!this.hasMoved && !target.isOccupied && target.col === this.col && target.row === this.row + 2) 
+      return true
+    
+  } 
 
-    if (target.occupied &&
-      (target.col === this.col + 1 || target.col === this.col - 1)) return true;
 
-  }
+  if (this.color === "white") {
+
+    if ((!target.isOccupied && target.col === this.col && target.row === this.row - 1) ||
+         (target.isOccupied && target.piece.color !== "white" && (target.col === this.col + 1 || target.col === this.col - 1) && target.row === this.row - 1)) 
+      return true
+
+
+    if (!this.hasMoved && !target.isOccupied && target.col === this.col && target.row === this.row - 2) 
+      return true
+    
+  } 
+
 }
 
 

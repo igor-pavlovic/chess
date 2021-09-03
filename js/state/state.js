@@ -71,7 +71,7 @@ function State() {
 
     // Position each piece to their initial place
     for (let i = 0; i < pieces.length; i++) {
-      this.placePiece( pieces[i], fields[i] );
+      pieces[i].moveToField( fields[i] );
     }
 
   }
@@ -157,45 +157,39 @@ function State() {
 
   }
 
-  this.placePiece = function( piece, target ) {
+ /*  this.placePiece = function( piece, target ) {
 
-    // Clear up piece's old field and set it to unoccupied
-    if (piece.field) {
-      piece.field.isOccupied = false;
-      piece.field.piece = null;
-    }
+    if (piece.field) piece.field.removePiece();
+    
 
     // Move the piece to new position and set new links
-    piece.row = target.row;
-    piece.col = target.col;
-    piece.field = target;
-    target.piece = piece;
-    target.isOccupied = true;
-
-  }
+    piece.moveToField( target )
+    target.setPiece( piece )
+ 
+  } */
 
 
   this.move = function( piece, target ) {
 
     if (target.isOccupied && target.piece.color !== piece.color) {
 
-      const pieceToRemove = this.pieces.find(item => item.row === target.row && 
-                                              item.col === target.col);
-
-      if (pieceToRemove) pieceToRemove.removeFromField()
-      
+      const pieceToRemove = this.pieces.find(item => item.row === target.row && item.col === target.col);
+    
+      if (pieceToRemove) pieceToRemove.removeFromGame();
+    
     }
 
-    piece.hasMoved = true;
-
-    this.placePiece( piece, target )
+    piece.moveToField( target );
+    piece.updateMovedStatus();
 
   }
 
 
   this.getLegalMoves = function ( piece ) {
 
-    return this.boardFlat.filter( field  =>  piece.isValidMove( field ))
+    return this.boardFlat.filter( field  =>  {
+      return piece.isValidMove( field ) && (!field.isOccupied || (field.isOccupied && field.piece.color !== piece.color))
+    }) 
 
   }
 

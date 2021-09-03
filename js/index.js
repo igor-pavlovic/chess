@@ -132,6 +132,23 @@ function render() {
   // update the picking ray with the camera and mouse position
   raycaster.setFromCamera( pointer, camera );
 
+
+  // Clear up removed figures from the scene
+  pieceMeshes = pieceMeshes.filter(mesh => {
+
+    if (mesh.state.isRemoved) {
+      mesh.geometry.dispose();
+      mesh.material.dispose();
+      scene.remove(mesh);
+
+      return false
+    }
+
+    return true
+  })
+
+
+
   // calculate objects intersecting the picking ray
   const intersects = raycaster.intersectObjects( SELECTED_PIECE ? fieldMeshes : pieceMeshes );
 
@@ -160,12 +177,14 @@ function render() {
     } else if ( HOVERED_ELEMENT ) {
 
       HOVERED_ELEMENT.material.emissive.setHex( HOVERED_ELEMENT.currentHex );
+
     }
 
 
     HOVERED_ELEMENT = null;
 
   }
+
 
   renderer.render(scene, camera);
 
@@ -248,12 +267,10 @@ function onMouseClick(event) {
     if (!SELECTED_PIECE) {
       
       // Handle selection of the figure
-
       SELECTED_PIECE = HOVERED_ELEMENT;
 
 
       // Paint fields which figure can be moved to
-
       legalMoves = state.getLegalMoves( SELECTED_PIECE.state ).map( field => field.mesh );
 
       legalMoves.forEach( field => {
@@ -265,9 +282,9 @@ function onMouseClick(event) {
 
     } else {
       
-      // Handle moving the figure
+      // Handle moving of the figure
 
-      const message = JSON.stringify({
+      webSocket.send(JSON.stringify({
         action: 'move',
 
         piece: {
@@ -280,19 +297,15 @@ function onMouseClick(event) {
           col: HOVERED_ELEMENT.state.col 
         },
 
-        testingNumber: 2,
-        testingString: "2",
-        testingBool: true,
-      })
+      }));
 
-      webSocket.send(message);
-
-      // moveFigure( SELECTED_PIECE, HOVERED_ELEMENT )
+      
+      // Restore original color to all elements
 
       
       legalMoves.forEach( field => field.material.emissive.setHex( field.originalHex ) )
-
-      legalMoves = []
+      legalMoves = [];
+      
       SELECTED_PIECE = null;
 
     }
@@ -302,13 +315,42 @@ function onMouseClick(event) {
 
 
 
-function moveFigure(piece, field) {
- 
+webSocket.onmessage = function( event ) {
+
+  const message = JSON.parse(event.data);
+
+
+  if ( message.action === 'move' ) {
+    moveFigure( message )
+  }
+
+};
+
+
+function moveFigure( message ) {
+
+  let piece, field;
+
+  try {
+
+    piece = state.pieces.find( piece => 
+                                  piece.col === message.piece.col && 
+                                  piece.row === message.piece.row )
+  
+    field = state.board[ message.target.row ][ message.target.col ];
+
+
+  } catch (e) {
+
+    console.log("Cannot find piece/field", e)
+
+  }
+
+  
   if (piece.field === field) {
 
-        // If the target fieldMesh is the one that the figure is already standing on, do nothing
-        return
-
+    return // If the target field is the one that the figure is already standing on, do nothing
+        
   } else if ( state.getLegalMoves( piece ).includes( field ) ) {
 
     state.move(piece, field);
@@ -319,21 +361,3 @@ function moveFigure(piece, field) {
   }
 }
 
-
-
-webSocket.onmessage = function(e) {
-
-  const data = JSON.parse(e.data);
-
-
-  if ( data.action === 'move' ) {
-
-    const figure = state.pieces.find( piece => 
-      piece.col === data.piece.col && 
-      piece.row === data.piece.row )
-
-    const target = state.board[ data.target.row ][ data.target.col ]
-
-    moveFigure( figure, target )
-  }
-};
