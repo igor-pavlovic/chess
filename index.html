@@ -5,6 +5,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bauhaus Chess</title>
+  <link rel="stylesheet" href="./css/fonts.css">
+  <link rel="stylesheet" href="./css/background.css">
   <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
@@ -17,40 +19,26 @@
       <img src="./assets/icons/arrows-angle-contract.svg" alt="Switch to top view">
     </button>
 
-    
     <!-- <button class="button side">Side view</button> -->
+
   </div>
   <div class="rotateInfo">
     You can rotate the board with your mouse (left-click) and pan/move the board as well (right-click).
     To turn off these controls, press the rotate button on the left again.
   </div>
-  <script type="module" src="./js/index.js"></script>
 
- <!--  <script type="module" >
-    const webSocket = new WebSocket('ws://127.0.0.1:8000');
-    console.log(webSocket)
+  <div class="background">
+    <div class="mondrian">
+      <h1>Bauhaus Chess</h1>
+      <div class="one red"></div>
+      <div class="two yellow"></div>
+      <div class="three beige"></div>
+      <div class="four blue"></div>
+      <div class="five beige"></div>
+    </div>
+  </div>
 
-    webSocket.onopen = () => {
-      console.log("open now")
-
-      webSocket.send(JSON.stringify({
-      person: "Mike",
-      age: 8,
-      married: true
-    }));
-    }
-
-    webSocket.onmessage = function(e) {
-      console.log(e.data)
-      const data = JSON.parse(e.data);
-    };
-
-    webSocket.send(JSON.stringify({
-      person: "Mike",
-      age: 8,
-      married: true
-    })); -->
-  </script>
+  <!-- <script type="module" src="./js/index.js"></script> -->
 
 </body>
 </html>
