@@ -3,129 +3,114 @@ import Figure from './figure.js'
 export { Pawn, Rook, Knight, Bishop, Queen, King }
 
 
-
-
-
-/* 
-Pawn 
-*/
-
-function Pawn(color) {
-  Figure.apply(this, [ "pawn", color ] );
-};
-
-
-Pawn.prototype = new Figure();
-
-Pawn.prototype.isValidMove = function(target) {
+class Pawn extends Figure {
   
-  if (this.color === "black") {
+  constructor( color ) {
+    super( color, 'pawn' );
+  }
 
-    if ((!target.isOccupied && target.col === this.col && target.row === this.row + 1) ||
-         (target.isOccupied && target.piece.color !== "black" && (target.col === this.col + 1 || target.col === this.col - 1) && target.row === this.row + 1)) 
+
+  isValidMove( target ) {
+
+    // Target is one row away
+    if ((this.isEmptyFieldInTheSameColumn( target ) && this.isOneRowAway( target )) ||
+        (this.isInNeighbouringColumn( target ) && this.isOneRowAway( target ) && target.isOccupiedByOpponent( this )))
       return true
 
-
-    if (!this.hasMoved && !target.isOccupied && target.col === this.col && target.row === this.row + 2) 
-      return true
-    
-  } 
-
-
-  if (this.color === "white") {
-
-    if ((!target.isOccupied && target.col === this.col && target.row === this.row - 1) ||
-         (target.isOccupied && target.piece.color !== "white" && (target.col === this.col + 1 || target.col === this.col - 1) && target.row === this.row - 1)) 
+    // Target is two rows away
+    if (this.isEmptyFieldInTheSameColumn( target ) && this.isTwoRowsAway( target ) && !this.hasMoved) 
       return true
 
+  }
 
-    if (!this.hasMoved && !target.isOccupied && target.col === this.col && target.row === this.row - 2) 
-      return true
-    
-  } 
 
+  isEmptyFieldInTheSameColumn( target ) {
+    return !target.isOccupied && target.col === this.col
+  }
+
+  isOneRowAway( target ) {
+    if (this.color === 'white') {
+      return target.row === this.row - 1
+    } else {
+      return target.row === this.row + 1
+    }
+  }
+
+  isTwoRowsAway( target ) {
+    if ( this.color === 'white' ) {
+      return target.row === this.row - 2
+    } else {
+      return target.row === this.row + 2
+    }
+  }
+
+  isInNeighbouringColumn( target ) {
+    return target.col === this.col + 1 || target.col === this.col - 1
+  }
 }
 
 
 
-/* 
-Rook 
-*/
+class Rook extends Figure {
+  constructor( color ) {
+    super( color, 'rook' );
+  }
 
-function Rook(color) {
-  Figure.apply(this, [ "rook", color ]);
-};
-
-Rook.prototype = new Figure();
-
-Rook.prototype.isValidMove = function( target ) {
-  return this.isInLine( target );
-}
-  
-
-/* 
-Knight 
-*/
-
-function Knight(color) {
-  Figure.apply(this, [ "knight", color ]);
-};
-
-Knight.prototype = new Figure();
-
-Knight.prototype.isValidMove = function( target ) {
-
-  return (Math.abs( target.row - this.row ) === 2 && 
-          Math.abs( target.col - this.col ) === 1 )    ||
-         (Math.abs( target.col - this.col ) === 2 && 
-          Math.abs( target.row - this.row ) === 1 ) 
-
+  isValidMove( target ) {
+    return this.isInLineWith( target );
+  }
 }
 
 
 
-/* 
-Bishop 
-*/
+class Knight extends Figure {
+  constructor( color ) {
+    super( color, 'knight' );
+  }
 
-function Bishop(color) {
-  Figure.apply(this, [ "bishop", color ]);
-};
+  isValidMove( target ) {
 
-Bishop.prototype = new Figure();
+    return (Math.abs( target.row - this.row ) === 2 && 
+            Math.abs( target.col - this.col ) === 1 )    ||
+           (Math.abs( target.col - this.col ) === 2 && 
+            Math.abs( target.row - this.row ) === 1 ) 
 
-Bishop.prototype.isValidMove = function( target ) {
-  return this.isDiagonal( target );
+  }
 }
 
 
 
-/* 
-Queen 
-*/
+class Bishop extends Figure {
+  constructor( color ) {
+    super( color, 'bishop' );
+  }
 
-function Queen(color) {
-  Figure.apply(this, [ "queen", color ]);
-};
-
-Queen.prototype = new Figure();
-
-Queen.prototype.isValidMove = function( target ) {
-  return this.isDiagonal( target ) || this.isInLine( target );
+  isValidMove( target ) {
+    return this.isDiagonalTo( target );
+  }
 }
 
-/* 
-King 
-*/
 
-function King(color) {
-  Figure.apply(this, [ "king", color ]);
-};
 
-King.prototype = new Figure();
+class Queen extends Figure {
+  constructor( color ) {
+    super( color, 'queen' );
+  }
 
-King.prototype.isValidMove = function( target ) {
-  return Math.abs( target.col - this.col ) < 2    &&
-         Math.abs( target.row - this.row ) < 2
+  isValidMove( target ) {
+    return this.isDiagonalTo( target ) || this.isInLineWith( target );
+  }
 }
 
+
+
+class King extends Figure {
+  constructor( color ) {
+    super( color, 'king' );
+  }
+
+  isValidMove( target ) {
+    return Math.abs( target.col - this.col ) < 2    &&
+           Math.abs( target.row - this.row ) < 2
+  }
+}

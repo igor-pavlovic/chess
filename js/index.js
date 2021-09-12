@@ -109,8 +109,8 @@ function init() {
 
   
   state = new State();
-  state.init();
   
+
   [ fieldMeshes, pieceMeshes ] = createBoard(scene, state)
 
 
