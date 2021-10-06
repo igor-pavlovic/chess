@@ -59,6 +59,10 @@ class Rook extends Figure {
   isValidMove( target ) {
     return this.isInLineWith( target );
   }
+
+  getAllValidMoves( board ) {
+    return this.getAllInlineMoves( board );
+  }
 }
 
 
@@ -88,6 +92,10 @@ class Bishop extends Figure {
   isValidMove( target ) {
     return this.isDiagonalTo( target );
   }
+
+  getAllValidMoves( board ) {
+    return this.getAllDiagonalMoves( board );
+  }
 }
 
 
@@ -99,6 +107,10 @@ class Queen extends Figure {
 
   isValidMove( target ) {
     return this.isDiagonalTo( target ) || this.isInLineWith( target );
+  }
+
+  getAllValidMoves( board ) {
+    return [...this.getAllInlineMoves( board ), ...this.getAllDiagonalMoves( board )];
   }
 }
 

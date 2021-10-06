@@ -74,10 +74,10 @@ export default class State {
   createPieces( color ) {
     const pieceSet = []
 
-    for (let i = 0; i < 8; i++) {
+   /*  for (let i = 0; i < 8; i++) {
       const figure = new Pawn(color);
       pieceSet.push(figure)
-    }
+    } */
 
     for (let i = 0; i < 2; i++) {
       const figure = new Rook(color);
@@ -168,9 +168,7 @@ export default class State {
 
 
   getLegalMoves( piece ) {
-    return this.boardFlat.filter( field  =>  {
-      return piece.isValidMove( field ) && (!field.isOccupied || field.isOccupiedByOpponent( piece ))
-    }) 
+    return piece.getAllValidMoves( this.board ); 
   }
 
 }
