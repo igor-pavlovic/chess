@@ -1,3 +1,5 @@
+/node_modules/
+
 /assets-orig/
 
 # Assets used for material definition are unignored here

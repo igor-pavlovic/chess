@@ -140,7 +140,7 @@ function BishopMesh( color, { x, y, z } ) {
   mesh.castShadow = true;
   mesh.receiveShadow = true;
   
-  mesh.position.set( x, y, z );
+  mesh.position.set( x, y, z + baseSize / 2);
 
   return mesh
 

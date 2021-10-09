@@ -77,7 +77,7 @@ export default class State {
    /*  for (let i = 0; i < 8; i++) {
       const figure = new Pawn(color);
       pieceSet.push(figure)
-    } */
+    }  */
 
     for (let i = 0; i < 2; i++) {
       const figure = new Rook(color);
