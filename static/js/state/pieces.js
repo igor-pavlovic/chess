@@ -7,6 +7,8 @@ class Pawn extends Figure {
   
   constructor( color ) {
     super( color, 'pawn' );
+    this.oneRowForward = this.color === 'white' ? -1 : 1;
+    this.twoRowsForward = this.color === 'white' ? -2 : 2;
   }
 
 
@@ -23,29 +25,78 @@ class Pawn extends Figure {
 
   }
 
-
   isEmptyFieldInTheSameColumn( target ) {
     return !target.isOccupied && target.col === this.col
   }
 
   isOneRowAway( target ) {
-    if (this.color === 'white') {
-      return target.row === this.row - 1
-    } else {
-      return target.row === this.row + 1
-    }
+    return target.row === this.row + this.oneRowForward
   }
 
   isTwoRowsAway( target ) {
-    if ( this.color === 'white' ) {
-      return target.row === this.row - 2
-    } else {
-      return target.row === this.row + 2
-    }
+    return target.row === this.row + this.twoRowsForward
   }
 
   isInNeighbouringColumn( target ) {
     return target.col === this.col + 1 || target.col === this.col - 1
+  }
+
+
+  getAllValidMoves( board ) {
+
+    // check for enpassante?
+
+    this.isFirstStepPossible = false;
+    const viableFields = [];
+
+    const fieldPositions = [
+      {
+        rowOffset: this.oneRowForward,
+        colOffset: 0,
+        checks: [ this.isValidOneStepMove ]
+      }, 
+      {
+        rowOffset: this.twoRowsForward,
+        colOffset: 0,
+        checks: [ this.isValidTwoStepMove ]
+      },
+      { 
+        rowOffset: this.oneRowForward,
+        colOffset: -1,
+        checks: [ this.isValidAttackingMove ]
+      },
+      {
+        rowOffset: this.oneRowForward,
+        colOffset: 1,
+        checks: [ this.isValidAttackingMove ]
+      }
+    ]
+
+    for (let position of fieldPositions) {    
+      let field;
+      
+      try {
+        field = board[ this.row + position.rowOffset ][ this.col + position.colOffset ];
+      } catch (error) {}
+
+      if (field && position.checks.every(check => check(field))) viableFields.push(field);
+    }   
+    
+    return viableFields
+  }
+
+
+  isValidOneStepMove = ( target ) => {
+    this.isFirstStepPossible = !target.isOccupied;
+    return this.isFirstStepPossible
+  }
+
+  isValidTwoStepMove = ( target ) => {
+    return this.isFirstStepPossible && !target.isOccupied && !this.hasMoved
+  }
+
+  isValidAttackingMove = ( target ) => {
+    return target.isOccupiedByOpponent( this )
   }
 }
 

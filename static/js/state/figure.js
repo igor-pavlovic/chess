@@ -65,7 +65,7 @@ export default class Figure {
 
 
   getAllInlineMoves( board ) {
-    let viableFields = [];
+    const viableFields = [];
     const directions = ["up", "right", "down", "left"]
 
     for (let direction of directions) {
@@ -113,7 +113,7 @@ export default class Figure {
 
 
   getAllDiagonalMoves( board ) {
-    let viableFields = [];
+    const viableFields = [];
     const directions = ["up-left", "up-right", "down-left", "down-right"]
 
     for (let direction of directions) {

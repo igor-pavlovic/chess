@@ -40,22 +40,20 @@ export default class State {
 
       for (let col = 0; col < 8; col++) {
 
-        let color 
+        let fieldColor 
         if (row % 2 !== 0) {
-          if (col % 2 !== 0) {
-            color = "white";
-          } else {
-            color = "black";
-          }
+          if (col % 2 !== 0) 
+            fieldColor = "white"
+          else 
+            fieldColor = "black"
         } else {
-          if (col % 2 !== 0) {
-            color = "black";
-          } else {
-            color = "white";
-          }
+          if (col % 2 !== 0) 
+            fieldColor = "black"
+          else 
+            fieldColor = "white"
         }
 
-        const field = new Field(color, row, col)
+        const field = new Field(fieldColor, row, col)
         fields.push(field);
 
       }
@@ -74,10 +72,10 @@ export default class State {
   createPieces( color ) {
     const pieceSet = []
 
-   /*  for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 8; i++) {
       const figure = new Pawn(color);
       pieceSet.push(figure)
-    }  */
+    } 
 
     for (let i = 0; i < 2; i++) {
       const figure = new Rook(color);
@@ -104,6 +102,7 @@ export default class State {
       pieceSet.splice(pieceSet.length - 3, 0, figure)
     }
 
+    // Concat is used since this functions has to be run two times, for each piece color
     this.pieces = this.pieces.concat(pieceSet);
     
     return this;
