@@ -131,6 +131,58 @@ class Knight extends Figure {
             Math.abs( target.row - this.row ) === 1 ) 
 
   }
+
+  getAllValidMoves( board ) {
+
+    const viableFields = [];
+
+    const fieldPositions = [
+      {
+        rowOffset: -2,
+        colOffset: -1,
+      }, 
+      {
+        rowOffset: -2,
+        colOffset: 1,
+      }, 
+      {
+        rowOffset: -1,
+        colOffset: -2,
+      }, 
+      {
+        rowOffset: -1,
+        colOffset: 2,
+      }, 
+      {
+        rowOffset: 1,
+        colOffset: -2,
+      }, 
+      {
+        rowOffset: 1,
+        colOffset: 2,
+      }, 
+      {
+        rowOffset: 2,
+        colOffset: -1,
+      }, 
+      {
+        rowOffset: 2,
+        colOffset: -1,
+      }, 
+    ]
+
+    for (let position of fieldPositions) {    
+      let field;
+      
+      try {
+        field = board[ this.row + position.rowOffset ][ this.col + position.colOffset ];
+      } catch (error) {}
+
+      if (field && (!field.isOccupied || field.isOccupiedByOpponent( this ))) viableFields.push(field);
+    }   
+    
+    return viableFields
+  }
 }
 
 

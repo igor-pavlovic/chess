@@ -269,16 +269,9 @@ function onMouseClick(event) {
       // Handle selection of the figure
       SELECTED_PIECE = HOVERED_ELEMENT;
 
-
       // Paint fields which figure can be moved to
-      legalMoves = state.getLegalMoves( SELECTED_PIECE.state ).map( field => field.mesh );
-
-      legalMoves.forEach( field => {
-
-        field.originalHex = field.material.emissive.getHex();
-        field.material.emissive.setHex( 0xff00ff );
-
-      })
+      legalMoves = getLegalMovesMeshes( SELECTED_PIECE );
+      highlightMeshes(legalMoves);
 
     } else {
       
@@ -301,8 +294,6 @@ function onMouseClick(event) {
 
       
       // Restore original color to all elements
-
-      
       legalMoves.forEach( field => field.material.emissive.setHex( field.originalHex ) )
       legalMoves = [];
       
@@ -311,6 +302,17 @@ function onMouseClick(event) {
     }
   }
 
+}
+
+function getLegalMovesMeshes( piece ) {
+  return state.getLegalMoves( piece.state ).map( field => field.mesh );
+}
+
+function highlightMeshes( meshList ) {
+  meshList.forEach( mesh => {
+    mesh.originalHex = mesh.material.emissive.getHex();
+    mesh.material.emissive.setHex( 0xff00ff );
+  })
 }
 
 
