@@ -1,18 +1,23 @@
-import Figure from './figure.js'
+import Figure from './figure'
+import Field from "./field"
 
 export { Pawn, Rook, Knight, Bishop, Queen, King }
 
+type Board = [Field[]]
 
 class Pawn extends Figure {
+  oneRowForward: number
+  twoRowsForward: number
+  isFirstStepPossible: boolean
   
-  constructor( color ) {
+  constructor( color: string ) {
     super( color, 'pawn' );
     this.oneRowForward = this.color === 'white' ? -1 : 1;
     this.twoRowsForward = this.color === 'white' ? -2 : 2;
+    this.isFirstStepPossible = false;
   }
 
-
-  isValidMove( target ) {
+  isValidMove( target: Field ) {
 
     // Target is one row away
     if ((this.isEmptyFieldInTheSameColumn( target ) && this.isOneRowAway( target )) ||
@@ -25,30 +30,31 @@ class Pawn extends Figure {
 
   }
 
-  isEmptyFieldInTheSameColumn( target ) {
+  isEmptyFieldInTheSameColumn( target: Field ) {
     return !target.isOccupied && target.col === this.col
   }
 
-  isOneRowAway( target ) {
+  isOneRowAway( target: Field ) {
+    if (!this.col || !this.row) return
     return target.row === this.row + this.oneRowForward
   }
 
-  isTwoRowsAway( target ) {
+  isTwoRowsAway( target: Field ) {
+    if (!this.col || !this.row) return
     return target.row === this.row + this.twoRowsForward
   }
 
-  isInNeighbouringColumn( target ) {
+  isInNeighbouringColumn( target: Field ) {
+    if (!this.col || !this.row) return
     return target.col === this.col + 1 || target.col === this.col - 1
   }
 
 
-  getAllValidMoves( board ) {
-
-    // check for enpassante?
-
-    this.isFirstStepPossible = false;
+  getAllValidMoves( board: Board ) {
+    if (!this.col || !this.row) return
     const viableFields = [];
 
+    // check for enpassante?
     const fieldPositions = [
       {
         rowOffset: this.oneRowForward,
@@ -73,29 +79,29 @@ class Pawn extends Figure {
     ]
 
     for (let position of fieldPositions) {    
-      let field;
+      let field: Field;
       
       try {
         field = board[ this.row + position.rowOffset ][ this.col + position.colOffset ];
       } catch (error) {}
 
-      if (field && position.checks.every(check => check(field))) viableFields.push(field);
+      if (field! && position.checks.every(check => check(field))) viableFields.push(field);
     }   
     
     return viableFields
   }
 
 
-  isValidOneStepMove = ( target ) => {
+  isValidOneStepMove = ( target: Field ) => {
     this.isFirstStepPossible = !target.isOccupied;
     return this.isFirstStepPossible
   }
 
-  isValidTwoStepMove = ( target ) => {
+  isValidTwoStepMove = ( target: Field ) => {
     return this.isFirstStepPossible && !target.isOccupied && !this.hasMoved
   }
 
-  isValidAttackingMove = ( target ) => {
+  isValidAttackingMove = ( target: Field ) => {
     return target.isOccupiedByOpponent( this )
   }
 }
@@ -103,15 +109,15 @@ class Pawn extends Figure {
 
 
 class Rook extends Figure {
-  constructor( color ) {
+  constructor( color: string ) {
     super( color, 'rook' );
   }
 
-  isValidMove( target ) {
+  isValidMove( target: Field ) {
     return this.isInLineWith( target );
   }
 
-  getAllValidMoves( board ) {
+  getAllValidMoves( board: Board ) {
     return this.getAllInlineMoves( board );
   }
 }
@@ -119,23 +125,23 @@ class Rook extends Figure {
 
 
 class Knight extends Figure {
-  constructor( color ) {
+  constructor( color: string ) {
     super( color, 'knight' );
   }
 
-  isValidMove( target ) {
+  isValidMove( target: Field ) {
+    if (!this.col || !this.row) return
 
     return (Math.abs( target.row - this.row ) === 2 && 
             Math.abs( target.col - this.col ) === 1 )    ||
            (Math.abs( target.col - this.col ) === 2 && 
             Math.abs( target.row - this.row ) === 1 ) 
-
   }
 
-  getAllValidMoves( board ) {
+  getAllValidMoves( board: Board ) {
+    if (!this.col || !this.row) return
 
     const viableFields = [];
-
     const fieldPositions = [
       {
         rowOffset: -2,
@@ -172,7 +178,7 @@ class Knight extends Figure {
     ]
 
     for (let position of fieldPositions) {    
-      let field;
+      let field: Field | undefined;
       
       try {
         field = board[ this.row + position.rowOffset ][ this.col + position.colOffset ];
@@ -188,15 +194,15 @@ class Knight extends Figure {
 
 
 class Bishop extends Figure {
-  constructor( color ) {
+  constructor( color: string ) {
     super( color, 'bishop' );
   }
 
-  isValidMove( target ) {
+  isValidMove( target: Field ) {
     return this.isDiagonalTo( target );
   }
 
-  getAllValidMoves( board ) {
+  getAllValidMoves( board: Board ) {
     return this.getAllDiagonalMoves( board );
   }
 }
@@ -204,15 +210,15 @@ class Bishop extends Figure {
 
 
 class Queen extends Figure {
-  constructor( color ) {
+  constructor( color: string ) {
     super( color, 'queen' );
   }
 
-  isValidMove( target ) {
+  isValidMove( target: Field ) {
     return this.isDiagonalTo( target ) || this.isInLineWith( target );
   }
 
-  getAllValidMoves( board ) {
+  getAllValidMoves( board: Board ) {
     return [...this.getAllInlineMoves( board ), ...this.getAllDiagonalMoves( board )];
   }
 }
@@ -220,11 +226,12 @@ class Queen extends Figure {
 
 
 class King extends Figure {
-  constructor( color ) {
+  constructor( color: string ) {
     super( color, 'king' );
   }
 
-  isValidMove( target ) {
+  isValidMove( target: Field ) {
+    if (!this.col || !this.row) return
     return Math.abs( target.col - this.col ) < 2    &&
            Math.abs( target.row - this.row ) < 2
   }

@@ -2,4 +2,4 @@
 function add(a, b) {
     return a + b;
 }
-add(2, 22);
+add(2, 2);

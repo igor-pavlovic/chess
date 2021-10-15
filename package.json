@@ -6,14 +6,14 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm run compile-sass && npm run compile-ts && node server.js",
+    "start": "npm run build && node server.js",
     "compile-sass": "sass ./src/styles/style.scss:./dist/css/style.css",
-    "compile-ts": "npx tsc && exit 0",
-    "build": "concurrently --kill-others \"npm:compile-ts\" \"npm:compile-scss\"",
-    "watch-scss": "sass -w ./src/styles/style.scss:./dist/css/style.css && exit 0",
-    "watch-ts": "npx tsc -W",
+    "compile-ts": "npx tsc",
+    "build": "npm run compile-sass & npm run compile-ts",
+    "watch-sass": "sass -w ./src/styles/style.scss:./dist/css/style.css && exit 0",
+    "watch-ts": "npx tsc --watch --preserveWatchOutput",
     "watch-js": "nodemon server.js",
-    "dev": "concurrently --kill-others-on-fail \"npm:watch-ts\" \"npm:watch-js\" \"npm:watch-scss\""
+    "dev": "concurrently --kill-others-on-fail \"npm:watch-ts\" \"npm:watch-js\" \"npm:watch-sass\""
   },
   "repository": {
     "type": "git",
