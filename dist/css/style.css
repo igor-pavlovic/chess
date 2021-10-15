@@ -1,0 +1,129 @@
+@font-face {
+  font-family: "Bauhaus";
+  src: url("/assets/fonts/Bauhaus-Regular.woff2") format("woff2"), url("/assets/fonts/Bauhaus-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Bauhaus";
+  src: url("/assets/fonts/Bauhaus-Black.woff2") format("woff2"), url("/assets/fonts/Bauhaus-Black.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+.background {
+  height: 100vh;
+  background-color: ivory;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mondrian {
+  position: relative;
+  height: 80vmin;
+  width: 60vmin;
+  background-color: black;
+  display: grid;
+  grid-template-columns: 62% 1fr;
+  grid-template-rows: 50% 28% 1fr;
+  gap: 3vmin;
+  border: 1vmin solid black;
+}
+
+.mondrian .red {
+  background-color: #f35933;
+}
+
+.mondrian .beige {
+  background-color: #e8dcc2;
+}
+
+.mondrian .yellow {
+  background-color: #f5cc02;
+}
+
+.mondrian .blue {
+  background-color: #387ba5;
+}
+
+.mondrian .three {
+  grid-row: span 2;
+}
+
+h1 {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: max-content;
+  font-size: 12vmin;
+  transform: rotate(-90deg) translateX(-1vmin);
+  transform-origin: left bottom;
+}
+
+:root {
+  font-family: "Bauhaus", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  width: 100%;
+  margin-bottom: 1em;
+  padding: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1em;
+  cursor: pointer;
+  color: ivory;
+  background-color: ivory;
+  border: 2px solid black;
+}
+
+button img,
+button svg {
+  width: 2em;
+  height: 2em;
+}
+
+button * + img,
+button * + svg {
+  margin-left: 1em;
+}
+
+.ui {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: auto;
+}
+
+.active {
+  background-color: lightgray;
+}
+
+.rotateInfo {
+  position: absolute;
+  top: 1em;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1em;
+  text-align: center;
+  background-color: ivory;
+  border: 2px solid black;
+  border-radius: 1em;
+  transition: opacity 300ms;
+  opacity: 0;
+}
+
+.visible {
+  opacity: 1;
+}
+
+/*# sourceMappingURL=style.css.map */

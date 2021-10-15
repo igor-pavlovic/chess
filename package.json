@@ -1,13 +1,19 @@
 {
   "name": "chess",
   "version": "1.0.0",
-  "type": "module", 
+  "type": "module",
   "description": "Simple chess game utilizing ThreeJS library and Bauhaus school of design's chess piece designs.",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js",
-    "start": "node server.js"
+    "start": "npm run compile-sass && npm run compile-ts && node server.js",
+    "compile-sass": "sass ./src/styles/style.scss:./dist/css/style.css",
+    "compile-ts": "npx tsc && exit 0",
+    "build": "concurrently --kill-others \"npm:compile-ts\" \"npm:compile-scss\"",
+    "watch-scss": "sass -w ./src/styles/style.scss:./dist/css/style.css && exit 0",
+    "watch-ts": "npx tsc -W",
+    "watch-js": "nodemon server.js",
+    "dev": "concurrently --kill-others-on-fail \"npm:watch-ts\" \"npm:watch-js\" \"npm:watch-scss\""
   },
   "repository": {
     "type": "git",
@@ -20,9 +26,12 @@
   },
   "homepage": "https://github.com/6Orion/chess#readme",
   "devDependencies": {
-    "nodemon": "^2.0.13"
+    "nodemon": "^2.0.13",
+    "sass": "^1.43.2",
+    "typescript": "^4.4.4"
   },
   "dependencies": {
+    "concurrently": "^6.3.0",
     "express": "^4.17.1",
     "ws": "^8.2.3"
   }

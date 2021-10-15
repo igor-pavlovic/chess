@@ -1,0 +1,51 @@
+.background {
+  height: 100vh;
+  background-color: ivory;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mondrian {
+  position: relative;
+  height: 80vmin;
+  width: 60vmin;
+  background-color: black;
+  display: grid;
+  grid-template-columns: 62% 1fr;
+  grid-template-rows: 50% 28% 1fr;
+  gap: 3vmin;
+  border: 1vmin solid black;
+}
+
+.mondrian .red {
+  background-color: rgb(243, 89, 51);
+}
+
+.mondrian .beige {
+  background-color: rgb(232, 220, 194);
+}
+
+.mondrian .yellow {
+  background-color: rgb(245, 204, 2);
+}
+
+.mondrian .blue {
+  background-color: rgb(56, 123, 165);
+}
+
+.mondrian .three {
+  grid-row: span 2;
+}
+
+h1 {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: max-content;
+  font-size: 12vmin;
+  transform: rotate(-90deg) translateX(-1vmin);
+  transform-origin: left bottom;
+}
+
+/*# sourceMappingURL=background.css.map */
