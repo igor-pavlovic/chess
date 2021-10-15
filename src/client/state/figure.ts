@@ -27,16 +27,6 @@ export default class Figure {
     this.isRemoved = false;
   }
 
-  /* move(target: Field) {
-    if (this.isValidMove(target)) {
-      this.setFieldRef(target);
-    } else {
-      console.error(
-        "Either this is not a valid move or isValidMove method is not yet implemented for this figure."
-      );
-    }
-  } */
-
   removeFromGame() {
     this.removeFieldRef();
     this.isRemoved = true;
@@ -66,11 +56,6 @@ export default class Figure {
   Utility methods
   */
 
-  isValidMovee(target: Field) {
-    // To be rewritten by implementation of each figure type, defaults to false
-    return false;
-  }
-
   isInLineWith(target: Field) {
     return this.col === target.col || this.row === target.row;
   }
@@ -80,7 +65,7 @@ export default class Figure {
     return Math.abs(target.col - this.col) === Math.abs(target.row - this.row);
   }
 
-  getAllDiagonalMoves(board: [Field[]]) {
+  getAllDiagonalMoves(board: Field[][]) {
     return this.getMoves((direction: Direction, offset: number) => {
       if (!this.row || !this.col) return;
 
@@ -103,7 +88,7 @@ export default class Figure {
     });
   }
 
-  getAllInlineMoves(board: [Field[]]) {
+  getAllInlineMoves(board: Field[][]) {
     return this.getMoves((direction: Direction, offset: number) => {
       if (!this.row || !this.col) return;
 
@@ -144,7 +129,7 @@ export default class Figure {
         if (field) {
           if (field.isOccupiedByYou(this)) 
             break;
-            
+
           if (field.isOccupiedByOpponent(this)) {
             viableFields.push(field);
             break;

@@ -3,7 +3,7 @@ import Field from "./field"
 
 export { Pawn, Rook, Knight, Bishop, Queen, King }
 
-type Board = [Field[]]
+type Board = Field[][]
 
 class Pawn extends Figure {
   oneRowForward: number
@@ -234,5 +234,9 @@ class King extends Figure {
     if (!this.col || !this.row) return
     return Math.abs( target.col - this.col ) < 2    &&
            Math.abs( target.row - this.row ) < 2
+  }
+
+  getAllValidMoves( board: Board ) {
+    return [...this.getAllInlineMoves( board ), ...this.getAllDiagonalMoves( board )];
   }
 }

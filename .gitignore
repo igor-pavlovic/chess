@@ -1,7 +1,9 @@
 /node_modules/
 
-/assets-orig/
+/dist/*
+!/dist/assets/
 
+/assets-orig/
 # Assets used for material definition are unignored here
 !/assets/lined-cement/
 !/assets/speckled-marble/

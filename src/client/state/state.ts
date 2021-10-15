@@ -1,12 +1,23 @@
-import Field from "./field.js";
-import { Pawn, Rook, Knight, Bishop, Queen, King } from "./pieces.js";
+import Field from "./field";
+import { Pawn, Rook, Knight, Bishop, Queen, King } from "./pieces";
+type Figure = Pawn | Rook | Knight | Bishop | Queen | King
 
 export default class State {
+  players: object;
+  turns: [];
+  board!: Field[][];
+  boardFlat: Field[];
+  pieces: Figure[];
+
+  finished: boolean;
+  winner: null;
+  duration: number;
+
   constructor() {
     this.players = {};
     this.turns = [];
     
-    this.board = [];
+    
     this.boardFlat = [];
     this.pieces = [];
 
@@ -32,11 +43,11 @@ export default class State {
 
   createBoard() {
     
-    const board = []
+    const board:Field[][] = []
 
     for (let row = 0; row < 8; row++) {
 
-      const fields = []
+      const fields:Field[] = []
 
       for (let col = 0; col < 8; col++) {
 
@@ -69,8 +80,8 @@ export default class State {
   }
 
 
-  createPieces( color ) {
-    const pieceSet = []
+  createPieces( color: string ) {
+    const pieceSet: Figure[] = []
 
     for (let i = 0; i < 8; i++) {
       const figure = new Pawn(color);
@@ -131,9 +142,9 @@ export default class State {
   }
 
 
-  move( piece, target ) {
+  move( piece: Figure, target: Field ) {
 
-    if (target.isOccupied && target.piece.color !== piece.color) {
+    if (target.isOccupied && target.piece?.color !== piece.color) {
 
       const pieceToRemove = this.pieces.find(item => item.row === target.row && item.col === target.col);
     
@@ -141,32 +152,30 @@ export default class State {
     
     }
 
-    const oldField = piece.field;
-    oldField.removePieceRef();
+    // Old field clean-up
+    piece.field?.removePieceRef();
 
-    const newField = target;
-    newField.setPieceRef( piece );
-
-    piece.setFieldRef( newField );
+    // Setting new field
+    target.setPieceRef( piece );
+    piece.setFieldRef( target );
     
     piece.updateMovedStatus();
 
   }
 
+  removePieceFromGame( piece: Figure ) {
 
-  removePieceFromGame( piece ) {
+    // Field clean-up
+    piece.field?.removePieceRef();
 
-    // Clean up the field as well
-    const currentField = piece.field;
-    currentField.removePieceRef();
-
+    // Piece clean-up
     piece.removeFromGame();
 
     return this;
   }
 
 
-  getLegalMoves( piece ) {
+  getLegalMoves( piece: Figure ) {
     return piece.getAllValidMoves( this.board ); 
   }
 
