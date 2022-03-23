@@ -1,12 +1,15 @@
-import * as THREE from 'https://cdn.skypack.dev/three@0.131.3';
-import { BufferGeometryUtils } from 'https://cdn.skypack.dev/three@0.131.3/examples/jsm/utils/BufferGeometryUtils.js';
+// import * as THREE from 'https://cdn.skypack.dev/three@0.131.3';
+// import { BufferGeometryUtils } from 'https://cdn.skypack.dev/three@0.131.3/examples/jsm/utils/BufferGeometryUtils.js';
+import * as THREE from 'three';
+import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
+
 
 
 const fieldSize = 1;
 const baseSize = fieldSize * 0.6;
 
 // Pythagora's theorem to get size of the crown and pawn elements
-const secondarySize = Math.sqrt( (baseSize / 2) ** 2 * 2 )
+const secondarySize = Math.sqrt((baseSize / 2) ** 2 * 2)
 
 
 function FieldMesh(color, { x, y, z }) {
@@ -22,10 +25,10 @@ function FieldMesh(color, { x, y, z }) {
 
 }
 
-function PawnMesh( color, { x, y, z } ) {
+function PawnMesh(color, { x, y, z }) {
 
-  const geometry = new THREE.BoxGeometry( secondarySize, secondarySize, secondarySize );
-  const mesh = new THREE.Mesh( geometry, color );
+  const geometry = new THREE.BoxGeometry(secondarySize, secondarySize, secondarySize);
+  const mesh = new THREE.Mesh(geometry, color);
   mesh.castShadow = true;
   mesh.receiveShadow = true;
 
@@ -37,9 +40,9 @@ function PawnMesh( color, { x, y, z } ) {
 
 
 
-function RookMesh( color, { x, y, z } ) {
+function RookMesh(color, { x, y, z }) {
 
-  const geometry = new THREE.BoxGeometry( baseSize, baseSize, baseSize );
+  const geometry = new THREE.BoxGeometry(baseSize, baseSize, baseSize);
   const mesh = new THREE.Mesh(geometry, color);
   mesh.castShadow = true;
   mesh.receiveShadow = true;
@@ -74,33 +77,33 @@ function KnightBaseGeometry() {
     bevelSegments: 1
   };
 
-  const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+  const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
 
   // Reposition the geometry to be in central position
-  geometry.applyMatrix4(new THREE.Matrix4().makeTranslation( - baseSize/ 2, - baseSize / 2, 0 ));
-  
+  geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(- baseSize / 2, - baseSize / 2, 0));
+
   return geometry
 
 }
 
 
 
-function KnightMesh( color, { x, y, z } ) {
+function KnightMesh(color, { x, y, z }) {
 
   const base = KnightBaseGeometry();
   const top = KnightBaseGeometry();
 
-  top.rotateZ(THREE.MathUtils.degToRad( 180 ));
+  top.rotateZ(THREE.MathUtils.degToRad(180));
   top.applyMatrix4(new THREE.Matrix4().makeTranslation(0, 0, baseSize / 2));
-  
-  const geometry = BufferGeometryUtils.mergeBufferGeometries([ base, top])
-  
-  const mesh = new THREE.Mesh( geometry, color );
+
+  const geometry = mergeBufferGeometries([ base, top ])
+
+  const mesh = new THREE.Mesh(geometry, color);
   mesh.castShadow = true;
   mesh.receiveShadow = true;
 
 
-  mesh.position.set( x, y, z );
+  mesh.position.set(x, y, z);
 
   return mesh
 
@@ -108,39 +111,39 @@ function KnightMesh( color, { x, y, z } ) {
 
 
 
-function BishopMesh( color, { x, y, z } ) {
+function BishopMesh(color, { x, y, z }) {
 
-  const firstDiagonal = new THREE.BoxGeometry( 1.1313, 0.2843, 1 );
-  const secondDiagonal = new THREE.BoxGeometry( 1.1313, 0.2843, 1 );
-  const firstCorner = new THREE.BoxGeometry( 0.2, 0.2, 1 );
-  const secondCorner = new THREE.BoxGeometry( 0.2, 0.2, 1 );
-  const thirdCorner = new THREE.BoxGeometry( 0.2, 0.2, 1 );
-  const fourthCorner = new THREE.BoxGeometry( 0.2, 0.2, 1 );
+  const firstDiagonal = new THREE.BoxGeometry(1.1313, 0.2843, 1);
+  const secondDiagonal = new THREE.BoxGeometry(1.1313, 0.2843, 1);
+  const firstCorner = new THREE.BoxGeometry(0.2, 0.2, 1);
+  const secondCorner = new THREE.BoxGeometry(0.2, 0.2, 1);
+  const thirdCorner = new THREE.BoxGeometry(0.2, 0.2, 1);
+  const fourthCorner = new THREE.BoxGeometry(0.2, 0.2, 1);
 
-  firstDiagonal.rotateZ(THREE.MathUtils.degToRad( 45 ));
-  secondDiagonal.rotateZ(THREE.MathUtils.degToRad( -45 ));
+  firstDiagonal.rotateZ(THREE.MathUtils.degToRad(45));
+  secondDiagonal.rotateZ(THREE.MathUtils.degToRad(-45));
 
-  firstCorner.applyMatrix4(new THREE.Matrix4().makeTranslation( 0.4, 0.4, 0 ));
-  secondCorner.applyMatrix4(new THREE.Matrix4().makeTranslation( -0.4, 0.4, 0 ));
-  thirdCorner.applyMatrix4(new THREE.Matrix4().makeTranslation( 0.4, -0.4, 0 ));
-  fourthCorner.applyMatrix4(new THREE.Matrix4().makeTranslation( -0.4, -0.4, 0 ));
+  firstCorner.applyMatrix4(new THREE.Matrix4().makeTranslation(0.4, 0.4, 0));
+  secondCorner.applyMatrix4(new THREE.Matrix4().makeTranslation(-0.4, 0.4, 0));
+  thirdCorner.applyMatrix4(new THREE.Matrix4().makeTranslation(0.4, -0.4, 0));
+  fourthCorner.applyMatrix4(new THREE.Matrix4().makeTranslation(-0.4, -0.4, 0));
 
-  const geometry = BufferGeometryUtils.mergeBufferGeometries([ 
-    firstDiagonal, 
+  const geometry = mergeBufferGeometries([
+    firstDiagonal,
     secondDiagonal,
     firstCorner,
     secondCorner,
     thirdCorner,
     fourthCorner
   ])
-  
+
   geometry.scale(baseSize, baseSize, baseSize);
 
-  const mesh = new THREE.Mesh( geometry, color );
+  const mesh = new THREE.Mesh(geometry, color);
   mesh.castShadow = true;
   mesh.receiveShadow = true;
-  
-  mesh.position.set( x, y, z + baseSize / 2);
+
+  mesh.position.set(x, y, z + baseSize / 2);
 
   return mesh
 
@@ -223,7 +226,7 @@ function BishopMesh( color, { x, y, z } ) {
   fourthAngle.applyMatrix4(new THREE.Matrix4().makeTranslation( longSide / 2, longSide / 2, 0 ));
 
 
-  const geometry = BufferGeometryUtils.mergeBufferGeometries([ 
+  const geometry = mergeBufferGeometries([ 
     firstDiagonal, 
     secondDiagonal, 
     firstAngle, 
@@ -247,9 +250,9 @@ function BishopMesh( color, { x, y, z } ) {
 
 
 
-function QueenMesh(color, { x, y, z } ) {
+function QueenMesh(color, { x, y, z }) {
 
-  const base = RookMesh(color, { x: 0, y: 0, z: 0});
+  const base = RookMesh(color, { x: 0, y: 0, z: 0 });
 
   const geometry = new THREE.SphereGeometry(baseSize / 2, 32, 16);
   const crown = new THREE.Mesh(geometry, color);
@@ -258,7 +261,7 @@ function QueenMesh(color, { x, y, z } ) {
   crown.position.set(0, 0, baseSize)
 
   const figure = base.add(crown);
-  figure.position.set( x, y, z + baseSize / 2 )
+  figure.position.set(x, y, z + baseSize / 2)
 
   return figure
 
@@ -266,15 +269,15 @@ function QueenMesh(color, { x, y, z } ) {
 
 
 
-function KingMesh(color,  { x, y, z } ) {
+function KingMesh(color, { x, y, z }) {
 
   const base = RookMesh(color, { x: 0, y: 0, z: 0 });
 
   const crown = PawnMesh(color, { x: 0, y: 0, z: baseSize / 2 });
-  crown.rotateZ( THREE.MathUtils.degToRad( 45 ) )
-  
-  const figure = base.add( crown );
-  figure.position.set( x, y, z + baseSize / 2 )
+  crown.rotateZ(THREE.MathUtils.degToRad(45))
+
+  const figure = base.add(crown);
+  figure.position.set(x, y, z + baseSize / 2)
 
   return figure
 

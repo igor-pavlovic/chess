@@ -1,24 +1,20 @@
 // Find the latest version by visiting https://cdn.skypack.dev/three.
-import * as THREE from 'https://cdn.skypack.dev/three@0.131.3';
-import { OrbitControls } from 'https://cdn.skypack.dev/three@0.131.3/examples/jsm/controls/OrbitControls.js';
+// import * as THREE from 'https://cdn.skypack.dev/three@0.131.3';
+// import { OrbitControls } from 'https://cdn.skypack.dev/three@0.131.3/examples/jsm/controls/OrbitControls.js';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
-import State from './state/state.js'
+import State from './state/state.ts'
 import createBoard from './engine/board.js';
 
 // Adjust socket settings depending on the hosting method
 const webSocket = new WebSocket(
   'ws://'
-  + '127.0.0.1:8000'
+  + `${import.meta.env.WS_SERVER || 'localhost'}:${import.meta.env.WS_PORT || 8000}`
   + '/ws/'
   + 0
   + '?v=1.0'
 );
-
-/*  + '/ws/'
-  + 0
-  + '?v=1.0'
-  */
-
 
 // Game's state
 let state
@@ -65,23 +61,23 @@ function init() {
   scene = new THREE.Scene();
   scene.background = new THREE.Color('beige');
 
-  const mainLight = new THREE.DirectionalLight( 0xffffff, 0.6);
+  const mainLight = new THREE.DirectionalLight(0xffffff, 0.6);
   mainLight.castShadow = true;
 
-  mainLight.position.set( 15, 22, 1 );
-  mainLight.target.position.set( 0, 0, 0 );
+  mainLight.position.set(15, 22, 1);
+  mainLight.target.position.set(0, 0, 0);
   scene.add(mainLight, mainLight.target);
 
-  const secondaryLight = new THREE.DirectionalLight( 0xffffff, 0.2);
+  const secondaryLight = new THREE.DirectionalLight(0xffffff, 0.2);
   secondaryLight.position.set(3, 3, 10);
   secondaryLight.target.position.set(8, 8, 0);
   scene.add(secondaryLight, secondaryLight.target);
 
-  const ambientLight = new THREE.AmbientLight( 0xffffff, 0.5);
-  scene.add(ambientLight); 
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+  scene.add(ambientLight);
 
-  const atmosphericLight = new THREE.SpotLight( 0xffffff, 0.3);
-  atmosphericLight.castShadow = true; 
+  const atmosphericLight = new THREE.SpotLight(0xffffff, 0.3);
+  atmosphericLight.castShadow = true;
   atmosphericLight.position.set(0, 0, 10);
   atmosphericLight.target.position.set(3, 3, 0);
   scene.add(atmosphericLight, atmosphericLight.target);
@@ -89,7 +85,7 @@ function init() {
 
   raycaster = new THREE.Raycaster();
 
-  renderer = new THREE.WebGLRenderer( { antialias: true } );
+  renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.shadowMap.enabled = true;
@@ -107,9 +103,9 @@ function init() {
   addInterfaceEvents()
 
 
-  
+
   state = new State();
-  
+
 
   [ fieldMeshes, pieceMeshes ] = createBoard(scene, state)
 
@@ -130,7 +126,7 @@ function animate() {
 function render() {
 
   // update the picking ray with the camera and mouse position
-  raycaster.setFromCamera( pointer, camera );
+  raycaster.setFromCamera(pointer, camera);
 
 
   // Clear up removed figures from the scene
@@ -150,33 +146,33 @@ function render() {
 
 
   // calculate objects intersecting the picking ray
-  const intersects = raycaster.intersectObjects( SELECTED_PIECE ? fieldMeshes : pieceMeshes );
+  const intersects = raycaster.intersectObjects(SELECTED_PIECE ? fieldMeshes : pieceMeshes);
 
 
   // Colour selected items
-  if ( intersects.length > 0 ) {
+  if (intersects.length > 0) {
 
-    if ( HOVERED_ELEMENT != intersects[ 0 ].object ) {
+    if (HOVERED_ELEMENT != intersects[ 0 ].object) {
 
-      if ( HOVERED_ELEMENT ) 
-        HOVERED_ELEMENT.material.emissive.setHex( HOVERED_ELEMENT.currentHex );
+      if (HOVERED_ELEMENT)
+        HOVERED_ELEMENT.material.emissive.setHex(HOVERED_ELEMENT.currentHex);
 
       HOVERED_ELEMENT = intersects[ 0 ].object;
       HOVERED_ELEMENT.currentHex = HOVERED_ELEMENT.material.emissive.getHex();
-      HOVERED_ELEMENT.material.emissive.setHex( 0xff0000 );
+      HOVERED_ELEMENT.material.emissive.setHex(0xff0000);
 
     }
 
   } else {
 
 
-    if ( HOVERED_ELEMENT && fieldMeshes.includes( HOVERED_ELEMENT )) {
+    if (HOVERED_ELEMENT && fieldMeshes.includes(HOVERED_ELEMENT)) {
 
-      HOVERED_ELEMENT.material.emissive.setHex( HOVERED_ELEMENT.originalHex );
+      HOVERED_ELEMENT.material.emissive.setHex(HOVERED_ELEMENT.originalHex);
 
-    } else if ( HOVERED_ELEMENT ) {
+    } else if (HOVERED_ELEMENT) {
 
-      HOVERED_ELEMENT.material.emissive.setHex( HOVERED_ELEMENT.currentHex );
+      HOVERED_ELEMENT.material.emissive.setHex(HOVERED_ELEMENT.currentHex);
 
     }
 
@@ -216,10 +212,10 @@ function addInterfaceEvents() {
 
   rotateButton.addEventListener("click", () => {
     controls.enabled = !controls.enabled;
-    
+
     rotateButton.classList.toggle("active");
     rotateInfo.classList.toggle("visible");
-    
+
   });
 
   //
@@ -263,18 +259,18 @@ function onPointerMove(event) {
 function onMouseClick(event) {
 
   if (HOVERED_ELEMENT) {
-    
+
     if (!SELECTED_PIECE) {
-      
+
       // Handle selection of the figure
       SELECTED_PIECE = HOVERED_ELEMENT;
 
       // Paint fields which figure can be moved to
-      legalMoves = getLegalMovesMeshes( SELECTED_PIECE );
+      legalMoves = getLegalMovesMeshes(SELECTED_PIECE);
       highlightMeshes(legalMoves);
 
     } else {
-      
+
       // Handle moving of the figure
 
       webSocket.send(JSON.stringify({
@@ -285,18 +281,18 @@ function onMouseClick(event) {
           col: SELECTED_PIECE.state.col
         },
 
-        target: { 
-          row: HOVERED_ELEMENT.state.row, 
-          col: HOVERED_ELEMENT.state.col 
+        target: {
+          row: HOVERED_ELEMENT.state.row,
+          col: HOVERED_ELEMENT.state.col
         },
 
       }));
 
-      
+
       // Restore original color to all elements
-      legalMoves.forEach( field => field.material.emissive.setHex( field.originalHex ) )
+      legalMoves.forEach(field => field.material.emissive.setHex(field.originalHex))
       legalMoves = [];
-      
+
       SELECTED_PIECE = null;
 
     }
@@ -304,41 +300,41 @@ function onMouseClick(event) {
 
 }
 
-function getLegalMovesMeshes( piece ) {
-  return state.getLegalMoves( piece.state ).map( field => field.mesh );
+function getLegalMovesMeshes(piece) {
+  return state.getLegalMoves(piece.state).map(field => field.mesh);
 }
 
-function highlightMeshes( meshList ) {
-  meshList.forEach( mesh => {
+function highlightMeshes(meshList) {
+  meshList.forEach(mesh => {
     mesh.originalHex = mesh.material.emissive.getHex();
-    mesh.material.emissive.setHex( 0xff00ff );
+    mesh.material.emissive.setHex(0xff00ff);
   })
 }
 
 
 
-webSocket.onmessage = function( event ) {
+webSocket.onmessage = function (event) {
 
   const message = JSON.parse(event.data);
 
 
-  if ( message.action === 'move' ) {
-    moveFigure( message )
+  if (message.action === 'move') {
+    moveFigure(message)
   }
 
 };
 
 
-function moveFigure( message ) {
+function moveFigure(message) {
 
   let piece, field;
 
   try {
 
-    piece = state.pieces.find( piece => 
-                                  piece.col === message.piece.col && 
-                                  piece.row === message.piece.row )
-  
+    piece = state.pieces.find(piece =>
+      piece.col === message.piece.col &&
+      piece.row === message.piece.row)
+
     field = state.board[ message.target.row ][ message.target.col ];
 
 
@@ -348,17 +344,17 @@ function moveFigure( message ) {
 
   }
 
-  
+
   if (piece.field === field) {
 
     return // If the target field is the one that the figure is already standing on, do nothing
-        
-  } else if ( state.getLegalMoves( piece ).includes( field ) ) {
+
+  } else if (state.getLegalMoves(piece).includes(field)) {
 
     state.move(piece, field);
 
-    piece.mesh.translateX( field.mesh.position.x - piece.mesh.position.x )
-    piece.mesh.translateY( field.mesh.position.y - piece.mesh.position.y )
+    piece.mesh.translateX(field.mesh.position.x - piece.mesh.position.x)
+    piece.mesh.translateY(field.mesh.position.y - piece.mesh.position.y)
 
   }
 }

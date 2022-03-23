@@ -28,6 +28,7 @@ class Pawn extends Figure {
     if (this.isEmptyFieldInTheSameColumn( target ) && this.isTwoRowsAway( target ) && !this.hasMoved) 
       return true
 
+    return false
   }
 
   isEmptyFieldInTheSameColumn( target: Field ) {
